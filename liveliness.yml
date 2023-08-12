@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveliness-pod
+  labels:
+    test: liveliness-probe
+    author: avd
+spec:
+  containers:
+    - name: myliveliness
+      image: busybox
+      args:
+        - /bin/sh
+        - -c
+        - touch /tmp/healthy:sleep 30; rm -f /tmp/healthy; sleep 100
+      livenessProbe:
+        exec:
+          command:
+            - cat
+            - /tmp/healthy
+        initialDelaySeconds: 5
+        periodSeconds: 5
+...
+

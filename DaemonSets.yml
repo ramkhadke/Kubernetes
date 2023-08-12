@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-demon
+  labels:
+    type: nginx
+spec:
+  selector:
+    matchLabels:
+      type: nginx
+  template:
+    metadata:
+      labels:
+        type: nginx
+    spec:
+      tolerations:
+      - key: slave2
+        operator: Equal
+        effect: NoSchedule
+      containers:
+      - name: mynginx
+        image: nginx
+        resources:
+          limits:
+            memory: '250Mi'
+          requests:
+            cpu: '500m'
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/lib/mysql
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: nginx-service
+  labels:
+    type: nginx
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 80
+      port: 80
+      nodePort: 31008
+...
+  
+
+
+
+
+
+

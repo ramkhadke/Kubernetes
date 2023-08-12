@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: nginx-pod
+  labels: 
+    author: ram
+    type: reverseproxy
+    cat: rat  
+spec:
+  containers:
+    - name: mynginx1
+      image: nginx
+...

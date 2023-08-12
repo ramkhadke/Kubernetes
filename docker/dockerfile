@@ -1,0 +1,5 @@
+FROM ubuntu
+MAINTAINER Ram
+RUN apt-get update
+RUN apt install tree bzip2 -y 
+

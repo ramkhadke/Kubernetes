@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    type: rproxy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: rproxy
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        type: rproxy
+    spec:
+      containers:
+        - name: mynginx
+          image: nginx
+...

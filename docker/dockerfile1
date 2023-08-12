@@ -1,0 +1,6 @@
+FROM ubuntu
+MAINTIANER mytrainings
+COPY ./script.sh /
+RUN ./script.sh
+
+

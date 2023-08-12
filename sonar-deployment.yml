@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube
+  labels:
+    name: sonarqube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: sonarqube
+  template:
+    metadata:
+      name: sonarqube
+      labels:
+        type: sonarqube
+    spec:
+      containers:
+        - name: sonarqube
+          image: sonarqube:latest
+          args:
+            - -Dsonar.web.context=/sonar
+          name: sonarqube
+          env:
+            - name: SONARQUBE_JDBC_USERNAME
+              valueFrom:
+                secretKeyRef:  
+                  name: cloudsql-db-credentials
+                  key: username
+            - name: SONARQUBE_JDBC_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: password
+            - name: SONARQUBE_JDBC_URL
+              value: jdbc:mysql://localhost:3306/sonar
+          ports:
+            - containerPort: 9000
+              name: sonarqube
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          command:
+            ["/cloud_sql_proxy","-instances=my-first-cluster-1:us-central1-c:sonarqube-instance=tcp:3306","-credential_file=/secrets/cloudesql/credentials.json"]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+...

@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: ghost-rc2
+  labels:
+    type: mycms
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: mycms
+  template:
+    metadata:
+      name: ghost-pod
+      labels:
+        type: mycms
+    spec:
+      containers:
+        - name: myghost
+          image: ghost
+          ports:
+            - containerPort: 2368 
+              hostPort: 7070
+          env:
+            - name: NODE_ENV
+              value: development
+...
+

@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-deployment
+  labels:
+    type: tomcat
+    author: ram
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: tomcat
+  template:
+    metadata:
+      name: tomcat-pod
+      labels:
+        type: tomcat
+    spec:
+      containers:
+        - name: mytomcat
+          image: tomcat
+          ports:
+            - containerPort: 8080
+              hostPort: 9090
+      tolerations:
+        - key: slave2
+          operator: Equal
+          effect: NoSchedule
+          value: ram
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-service
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 8080
+      port: 9090
+      nodePort: 30008
+...
+
+      
+
